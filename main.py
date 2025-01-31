@@ -28,10 +28,9 @@ wks = sh.sheet1
 # Преобразование данных в DataFrame
 data = wks.get_all_records()
 df = pd.DataFrame(data)
-# Вывод первых последних строк
-df.tail()
 
-# Вывод первых 10 строк
+# Вывод последних 10 строк
+print(df.tail(10))
 print(df.head(10))
 
 # Преобразование столбцов в нужные типы данных
@@ -44,14 +43,19 @@ df['Стул'] = df['Стул'].apply(lambda x: 1 if x == 'был' else 0)
 
 # Добавление признака "часть дня"
 def determine_part_of_day(row):
+    # Проверка, что время не является NaT (Not a Time)
     if pd.notna(row['время']):
+        # Если время меньше 14:00, считаем это утро
         return 'утро' if row['время'] < pd.to_datetime('14:00').time() else 'вечер'
     elif pd.notna(row['укол время']):
+        # Аналогично для времени укола
         return 'утро' if row['укол время'] < pd.to_datetime('14:00').time() else 'вечер'
     else:
         return None
 
+# Применение функции фильтрации
 df['часть дня'] = df.apply(determine_part_of_day, axis=1)
+
 # Разделение данных на утренние и вечерние
 
 morning_data = df[df['часть дня'] == 'утро']
