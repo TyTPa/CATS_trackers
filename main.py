@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Путь к файлу ключа JSON
-json_file_path = 'C:\Json_dir\catstracker-449519-fd725f5dd83f.json'
+json_file_path = r'C:\Json_dir\catstracker-449519-fd725f5dd83f.json'
 
 # Определение области видимости
 scope = [
@@ -64,6 +64,9 @@ print(morning_data[['дата', 'глюкоза', 'доза']])
 print("\nДанные для вечерних часов:")
 print(evening_data[['дата', 'глюкоза', 'доза']])
 
+# Проверка что все данные включены, на основе которых построены графики
+print(f"Количество утренних записей: {len(morning_data)}")
+print(f"Количество вечерних записей: {len(evening_data)}")
 # Построение графиков
 fig, axs = plt.subplots(2, 1, figsize=(14, 10))
 
@@ -177,10 +180,6 @@ for dose, group in evening_groups:
     ax1.legend(loc='upper left')
     ax2.legend(loc='upper right')
     ax1.grid(True)
-
-    # Форматирование дат на оси X
-  #  ax1.xaxis.set_major_formatter(plt.DateFormatter('%d.%m.%Y'))
- #   plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45)
 
     plt.tight_layout()
     plt.show()
