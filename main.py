@@ -1,17 +1,23 @@
-import pandas as pd
 import gspread
-from google.auth import default
-#from google.auth.transport.requests import Request
-#from google.colab import auth
+from google.oauth2.service_account import Credentials
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Путь к файлу ключа JSON
+json_file_path = 'C:\Json_dir\catstracker-449519-fd725f5dd83f.json'
 
-# Аутентификация и получение учетных данных
-auth.authenticate_user()
-creds, _ = default()
+# Определение области видимости
+scope = [
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/drive'
+]
+
+# Создание учетных данных
+creds = Credentials.from_service_account_file(json_file_path, scopes=scope)
+
+# Авторизация и открытие Google Таблицы
 gc = gspread.authorize(creds)
-
 # Откройте Google Таблицу по её URL
 spreadsheet_url = "https://docs.google.com/spreadsheets/d/1ZZIPE6JrIzLQskv37z_UXg0YW7NxmrfeyUuaDyNGL6I/edit?gid=0#gid=0"
 sh = gc.open_by_url(spreadsheet_url)
