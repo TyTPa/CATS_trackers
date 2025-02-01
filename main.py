@@ -92,10 +92,6 @@ ax2.plot(morning_data['дата'], morning_data['доза'], label='Доза', m
 ax2.set_ylabel('Доза', color='r')
 ax2.tick_params(axis='y', labelcolor='r')
 
-# Добавление тренда для дозы
-z2 = np.polyfit(morning_data.index, morning_data['доза'], 1)
-p2 = np.poly1d(z2)
-ax2.plot(morning_data['дата'], p2(morning_data.index), "r--", label='Тренд дозы')
 
 ax1.set_title('Утро: Глюкоза и Доза по Датам')
 ax1.legend(loc='upper left')
@@ -120,19 +116,21 @@ ax4.plot(evening_data['дата'], evening_data['доза'], label='Доза', m
 ax4.set_ylabel('Доза', color='r')
 ax4.tick_params(axis='y', labelcolor='r')
 
-# Добавление тренда для дозы
-z4 = np.polyfit(evening_data.index, evening_data['доза'], 1)
-p4 = np.poly1d(z4)
-ax4.plot(evening_data['дата'], p4(evening_data.index), "r--", label='Тренд дозы')
-
 ax3.set_title('Вечер: Глюкоза и Доза по Датам')
 ax3.legend(loc='upper left')
 ax4.legend(loc='upper right')
 ax3.grid(True)
 
-
 plt.tight_layout()
+# Сохранение графика в файл
+plt.savefig('glucose_levels.png')
+
+# Отображение графика
 plt.show()
+
+# Закрытие фигуры
+plt.close()
+
 # Группировка данных по периодам с одинаковой дозой
 morning_groups = df[df['часть дня'] == 'утро'].groupby('доза')
 evening_groups = df[df['часть дня'] == 'вечер'].groupby('доза')
@@ -156,8 +154,8 @@ for dose, group in morning_groups:
     ax1.grid(True)
 
     # Форматирование дат на оси X
-   # ax1.xaxis.set_major_formatter(plt.DateFormatter('%d.%m.%Y'))
-   # plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45)
+   ax1.xaxis.set_major_formatter(plt.DateFormatter('%d.%m.%Y'))
+   plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45)
 
     plt.tight_layout()
     plt.show()
