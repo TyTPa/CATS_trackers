@@ -126,7 +126,7 @@ plt.tight_layout()
 plt.savefig('glucose_levels.png')
 
 # Отображение графика
-plt.show()
+#plt.show()
 
 # Закрытие фигуры
 plt.close()
@@ -135,58 +135,60 @@ plt.close()
 morning_groups = df[df['часть дня'] == 'утро'].groupby('доза')
 evening_groups = df[df['часть дня'] == 'вечер'].groupby('доза')
 
-# Построение графиков для утренних часов
-for dose, group in morning_groups:
-    fig, ax1 = plt.subplots(figsize=(14, 7))
-    ax1.plot(group['дата'], group['глюкоза'], label='Глюкоза', marker='o', color='b')
-    ax1.set_xlabel('Дата')
-    ax1.set_ylabel('Глюкоза', color='b')
-    ax1.tick_params(axis='y', labelcolor='b')
 
-    ax2 = ax1.twinx()
-    ax2.plot(group['дата'], group['доза'], label='Доза', marker='x', color='r')
-    ax2.set_ylabel('Доза', color='r')
-    ax2.tick_params(axis='y', labelcolor='r')
+a = int(input("Строить графики по дозам? 1 - да 0 - нет: "))
+if a == 1:
+    # Построение графиков для утренних часов
+    for dose, group in morning_groups:
+        fig, ax1 = plt.subplots(figsize=(14, 7))
+        ax1.plot(group['дата'], group['глюкоза'], label='Глюкоза', marker='o', color='b')
+        ax1.set_xlabel('Дата')
+        ax1.set_ylabel('Глюкоза', color='b')
+        ax1.tick_params(axis='y', labelcolor='b')
 
-    ax1.set_title(f'Утро: Глюкоза и Доза по Датам (Доза: {dose})')
-    ax1.legend(loc='upper left')
-    ax2.legend(loc='upper right')
-    ax1.grid(True)
+        ax2 = ax1.twinx()
+        ax2.plot(group['дата'], group['доза'], label='Доза', marker='x', color='r')
+        ax2.set_ylabel('Доза', color='r')
+        ax2.tick_params(axis='y', labelcolor='r')
 
-    # Форматирование дат на оси X
-   ax1.xaxis.set_major_formatter(plt.DateFormatter('%d.%m.%Y'))
-   plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45)
+        ax1.set_title(f'Утро: Глюкоза и Доза по Датам (Доза: {dose})')
+        ax1.legend(loc='upper left')
+        ax2.legend(loc='upper right')
+        ax1.grid(True)
 
-    plt.tight_layout()
-    plt.show()
+        plt.savefig(f'glucose_Morning_{dose}.png')
+        plt.tight_layout()
+        #plt.show()
+        plt.close()
+        # Вывод данных, на основе которых построен график
+        print(f"Данные для утренних часов (Доза: {dose}):")
+        print(group[['дата', 'глюкоза', 'доза']])
+        print("\n")
 
-    # Вывод данных, на основе которых построен график
-    print(f"Данные для утренних часов (Доза: {dose}):")
-    print(group[['дата', 'глюкоза', 'доза']])
-    print("\n")
 
 # Построение графиков для вечерних часов
-for dose, group in evening_groups:
-    fig, ax1 = plt.subplots(figsize=(14, 7))
-    ax1.plot(group['дата'], group['глюкоза'], label='Глюкоза', marker='o', color='b')
-    ax1.set_xlabel('Дата')
-    ax1.set_ylabel('Глюкоза', color='b')
-    ax1.tick_params(axis='y', labelcolor='b')
+    for dose, group in evening_groups:
+        fig, ax1 = plt.subplots(figsize=(14, 7))
+        ax1.plot(group['дата'], group['глюкоза'], label='Глюкоза', marker='o', color='b')
+        ax1.set_xlabel('Дата')
+        ax1.set_ylabel('Глюкоза', color='b')
+        ax1.tick_params(axis='y', labelcolor='b')
 
-    ax2 = ax1.twinx()
-    ax2.plot(group['дата'], group['доза'], label='Доза', marker='x', color='r')
-    ax2.set_ylabel('Доза', color='r')
-    ax2.tick_params(axis='y', labelcolor='r')
+        ax2 = ax1.twinx()
+        ax2.plot(group['дата'], group['доза'], label='Доза', marker='x', color='r')
+        ax2.set_ylabel('Доза', color='r')
+        ax2.tick_params(axis='y', labelcolor='r')
 
-    ax1.set_title(f'Вечер: Глюкоза и Доза по Датам (Доза: {dose})')
-    ax1.legend(loc='upper left')
-    ax2.legend(loc='upper right')
-    ax1.grid(True)
+        ax1.set_title(f'Вечер: Глюкоза и Доза по Датам (Доза: {dose})')
+        ax1.legend(loc='upper left')
+        ax2.legend(loc='upper right')
+        ax1.grid(True)
 
-    plt.tight_layout()
-    plt.show()
-
+        plt.tight_layout()
+        plt.savefig(f'glucose_Evening_{dose}.png')
+        #plt.show()
+        plt.close()
     # Вывод данных, на основе которых построен график
-    print(f"Данные для вечерних часов (Доза: {dose}):")
-    print(group[['дата', 'глюкоза', 'доза']])
-    print("\n")
+        print(f"Данные для вечерних часов (Доза: {dose}):")
+        print(group[['дата', 'глюкоза', 'доза']])
+        print("\n")
