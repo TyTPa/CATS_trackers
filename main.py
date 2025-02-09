@@ -1,7 +1,8 @@
 import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
-
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 # Путь к файлу ключа JSON
@@ -97,7 +98,6 @@ ax1.set_title('Утро: Глюкоза и Доза по Датам')
 ax1.legend(loc='upper left')
 ax2.legend(loc='upper right')
 ax1.grid(True)
-
 # График для вечерних часов
 ax3 = axs[1]
 ax3.plot(evening_data['дата'], evening_data['глюкоза'], label='Глюкоза', marker='o', color='b')
@@ -155,6 +155,7 @@ if a == 1:
         ax1.legend(loc='upper left')
         ax2.legend(loc='upper right')
         ax1.grid(True)
+        ax1.xaxis.set_tick_params(rotation=45)  # Поворот меток на оси X
 
         plt.savefig(f'glucose_Morning_{dose}.png')
         plt.tight_layout()
@@ -183,6 +184,7 @@ if a == 1:
         ax1.legend(loc='upper left')
         ax2.legend(loc='upper right')
         ax1.grid(True)
+        ax1.xaxis.set_tick_params(rotation=45)  # Поворот меток на оси X
 
         plt.tight_layout()
         plt.savefig(f'glucose_Evening_{dose}.png')
