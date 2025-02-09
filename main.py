@@ -1,8 +1,8 @@
 import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
+
+
 
 # Путь к файлу ключа JSON
 json_file_path = r'C:\Json_dir\catstracker-449519-fd725f5dd83f.json'
