@@ -1,8 +1,6 @@
 import gspread
 import telebot
-#import datetime
 import time
-#import threading
 import random2
 import io
 from google.oauth2.service_account import Credentials
@@ -20,7 +18,7 @@ def start_message(message):
 
 @bot.message_handler(commands=['help'])
 def help_message(message):
-        bot.reply_to(message, f'Возможны команды /start - начало общения, /fact - факты о диабете, /graph - построить общий график, /gdose - набор графиков по дозам!')
+        bot.reply_to(message, f'Возможны команды /start - начало общения, /fact - факты о диабете, /graph - построить общий график, /gdmo - набор графиков по утренним дозам, /gdev - набор графиков по вечерним дозам')
 
 @bot.message_handler(commands=['fact'])
 def fact_message(message):
@@ -164,40 +162,41 @@ def graph_command(message):
 
     # Закрытие фигуры
 #    plt.close()
-while True:
-    try:
-        bot.polling(none_stop=True)
-    except Exception as e:
-        print(f"Error occurred: {e}")
-        time.sleep(15)  # Wait before restarting polling
+
 
     # Группировка данных по периодам с одинаковой дозой
-#    morning_groups = df[df['часть дня'] == 'утро'].groupby('доза')
-#    evening_groups = df[df['часть дня'] == 'вечер'].groupby('доза')
+morning_groups = df[df['часть дня'] == 'утро'].groupby('доза')
+evening_groups = df[df['часть дня'] == 'вечер'].groupby('доза')
 
-
+@bot.message_handler(commands=['gdmo'])
+def gdmo_command(message):
 #    a = int(input("Строить графики по дозам? 1 - да 0 - нет: "))
 #    if a == 1:
         # Построение графиков для утренних часов
-#        for dose, group in morning_groups:
-#            fig, ax1 = plt.subplots(figsize=(14, 7))
-#             ax1.plot(group['дата'], group['глюкоза'], label='Глюкоза', marker='o', color='b')
-#             ax1.set_xlabel('Дата')
-#             ax1.set_ylabel('Глюкоза', color='b')
-#             ax1.tick_params(axis='y', labelcolor='b')
+ for dose, group in morning_groups:
+   fig, ax1 = plt.subplots(figsize=(14, 7))
+   ax1.plot(group['дата'], group['глюкоза'], label='Глюкоза', marker='o', color='b')
+   ax1.set_xlabel('Дата')
+   ax1.set_ylabel('Глюкоза', color='b')
+   ax1.tick_params(axis='y', labelcolor='b')
 
-    #         ax2 = ax1.twinx()
-    #         ax2.plot(group['дата'], group['доза'], label='Доза', marker='x', color='r')
-    #         ax2.set_ylabel('Доза', color='r')
-    #         ax2.tick_params(axis='y', labelcolor='r')
+   ax2 = ax1.twinx()
+   ax2.plot(group['дата'], group['доза'], label='Доза', marker='x', color='r')
+   ax2.set_ylabel('Доза', color='r')
+   ax2.tick_params(axis='y', labelcolor='r')
+
+   ax1.set_title(f'Утро: Глюкоза и Доза по Датам (Доза: {dose})')
+   ax1.legend(loc='upper left')
+   ax2.legend(loc='upper right')
+   ax1.grid(True)
     #
-    #         ax1.set_title(f'Утро: Глюкоза и Доза по Датам (Доза: {dose})')
-    #         ax1.legend(loc='upper left')
-    #         ax2.legend(loc='upper right')
-    #         ax1.grid(True)
-    #
-    #         plt.savefig(f'glucose_Morning_{dose}.png')
-    #         plt.tight_layout()
+   plt.savefig(f'glucose_Morning_{dose}.png')
+   plt.tight_layout()
+
+   with io.BytesIO() as image_binary:
+        plt.savefig(image_binary, format='png')
+        image_binary.seek(0)
+        bot.send_photo(message.chat.id, image_binary)
     #         #plt.show()
     #         plt.close()
     #         # Вывод данных, на основе которых построен график
@@ -206,28 +205,41 @@ while True:
     #         print("\n")
     #
     #
+@bot.message_handler(commands=['gdev'])
+def gdev_command(message):
     # # Построение графиков для вечерних часов
-    #     for dose, group in evening_groups:
-    #         fig, ax1 = plt.subplots(figsize=(14, 7))
-    #         ax1.plot(group['дата'], group['глюкоза'], label='Глюкоза', marker='o', color='b')
-    #         ax1.set_xlabel('Дата')
-    #         ax1.set_ylabel('Глюкоза', color='b')
-    #         ax1.tick_params(axis='y', labelcolor='b')
+ for dose, group in evening_groups:
+    fig, ax1 = plt.subplots(figsize=(14, 7))
+    ax1.plot(group['дата'], group['глюкоза'], label='Глюкоза', marker='o', color='b')
+    ax1.set_xlabel('Дата')
+    ax1.set_ylabel('Глюкоза', color='b')
+    ax1.tick_params(axis='y', labelcolor='b')
     #
-    #         ax2 = ax1.twinx()
-    #         ax2.plot(group['дата'], group['доза'], label='Доза', marker='x', color='r')
-    #         ax2.set_ylabel('Доза', color='r')
-    #         ax2.tick_params(axis='y', labelcolor='r')
+    ax2 = ax1.twinx()
+    ax2.plot(group['дата'], group['доза'], label='Доза', marker='x', color='r')
+    ax2.set_ylabel('Доза', color='r')
+    ax2.tick_params(axis='y', labelcolor='r')
     #
-    #         ax1.set_title(f'Вечер: Глюкоза и Доза по Датам (Доза: {dose})')
-    #         ax1.legend(loc='upper left')
-    #         ax2.legend(loc='upper right')
-    #         ax1.grid(True)
+    ax1.set_title(f'Вечер: Глюкоза и Доза по Датам (Доза: {dose})')
+    ax1.legend(loc='upper left')
+    ax2.legend(loc='upper right')
+    ax1.grid(True)
     #
-    #         plt.tight_layout()
-    #         plt.savefig(f'glucose_Evening_{dose}.png')
+    plt.tight_layout()
+    plt.savefig(f'glucose_Evening_{dose}.png')
+    with io.BytesIO() as image_binary:
+        plt.savefig(image_binary, format='png')
+        image_binary.seek(0)
+        bot.send_photo(message.chat.id, image_binary)
     #         #plt.show()
     #         plt.close()
+while True:
+    try:
+        bot.polling(none_stop=True)
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        time.sleep(15)  # Wait before restarting polling
+
     #     # Вывод данных, на основе которых построен график
     #         print(f"Данные для вечерних часов (Доза: {dose}):")
     #         print(group[['дата', 'глюкоза', 'доза']])
